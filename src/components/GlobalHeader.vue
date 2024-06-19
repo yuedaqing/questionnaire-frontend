@@ -1,7 +1,25 @@
 <template>
   <a-row id="globalHeader" align="center" :wrap="false">
     <a-col flex="auto">
-      <a-menu mode="horizontal"> ... </a-menu>
+      <a-menu
+        mode="horizontal"
+        @menu-item-click="doMenuClick"
+        :selected-keys="selectedKeys"
+      >
+        <a-menu-item
+          key="0"
+          :style="{ padding: 0, marginRight: '38px' }"
+          disabled
+        >
+          <div class="title-bar">
+            <img class="logo" src="../assets/logo.png" alt="logo" />
+            <div class="title">问卷</div>
+          </div>
+        </a-menu-item>
+        <a-menu-item v-for="item in visibleRoutes" :key="item.path">
+          {{ item.name }}
+        </a-menu-item>
+      </a-menu>
     </a-col>
     <a-col flex="100px">
       <div>
@@ -11,34 +29,47 @@
   </a-row>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { routes } from "@/router/routes";
+import { useRouter } from "vue-router";
+import { ref } from "vue";
 
-export default defineComponent({
-  name: "HelloWorld",
-  props: {
-    msg: String,
-  },
+// 展示在菜单的路由数组
+const visibleRoutes = routes.filter((item) => {
+  if (item.meta?.hideInMenu) {
+    return false;
+  }
+  return true;
+});
+// 路由跳转事件
+const doMenuClick = (key: string) => {
+  router.push({
+    path: key,
+  });
+};
+
+const router = useRouter();
+
+// Tab 栏选中菜单项
+const selectedKeys = ref(["/"]);
+// 路由跳转后，更新选中的菜单项
+router.afterEach((to, from, failure) => {
+  selectedKeys.value = [to.path];
 });
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.title-bar {
+  display: flex;
+  align-items: center;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+.title {
+  margin-left: 16px;
+  color: black;
 }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
+.logo {
+  height: 48px;
 }
 </style>

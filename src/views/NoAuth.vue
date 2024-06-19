@@ -1,13 +1,11 @@
 <template>
-$END$
+  <div>无权限</div>
 </template>
 
 <script>
 export default {
-name: "NoAuth"
-}
+  name: "NoAuth",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
